@@ -1,0 +1,249 @@
+# 12.9 return 文
+## 構文
+
+```
+ReturnStatement :
+	return ;
+	return [no LineTerminator here] Expression ;
+```
+
+no LineTerminator hereとは
+
+ECMAScriptのプログラムは、FunctionBody(関数本体)内に何もない return 文を含む場合、構文上の誤りがあると考えられます。 実行を中止する為の関数に起因する return 文は、callerに値を返します。 Expression が、省略される場合、戻り値は、undefined(未定義)です。 それ以外の場合、戻り値は、Expression(式)の値です。
+
+ReturnExpressionは以下のように評価。
+
+1. Expressionが、存在しない場合、return (return, undefined, empty)
+2. exprRef は、Expressionを評価した結果とする
+3. return (return, GetValue(exprRef), empty)
+
+# 12.10 with 文
+## 構文
+
+```
+WithStatement :
+	with ( Expression ) Statement
+```
+
+with 文は、現在の実行コンテキストのレキシカル環境に生成したオブジェクトについてオブジェクト型環境レコードを追加します。 その場合、引数としたレキシカル環境を使って文を実行します。 最後にそれは元のレキシカル環境を復元します。
+
+withは次のように評価される
+
+1. val は、Expressionを評価した結果とする
+2. obj は、 ToObject(GetValue(val)) とする
+3. oldEnv は、実行中の実行コンテキストのLexicalEnvironmentとする
+4. newEnv は、引数として obj と oldEnv を渡すことによってNewObjectEnvironmentを呼んだ結果とする
+5. newEnv の provideThis フラグに true を設定
+6. 実行中の実行コンテキストのLexicalEnvironmentに newEnv を設定
+7. C は、Statementを評価した結果とするが、評価中に例外が投げられる(スローされる)場合、  V が例外である場合、 C は、 (throw, V, empty)とする(、もし、投げられる(スローされる)例外がない場合のように現在の結果を実行する)
+8.実行中の実行コンテキストのLexicalEnvironmentに oldEnv を設定
+9. C を返す
+
+## 12.10.1 strictモードの制限・制約
+
+strictモードのコードは、WithStatementに含んではならない。 このような文脈におけるWithStatementの出現は、SyntaxErrorとして扱われます。
+
+# 12.11 switch 文
+## 構文
+
+```
+SwitchStatement :
+	switch ( Expression ) CaseBlock
+
+CaseBlock :
+	{ CaseClausesopt }
+	{ CaseClausesopt DefaultClause CaseClausesopt }
+
+CaseClauses :
+	CaseClause
+	CaseClauses CaseClause
+
+CaseClause :
+	case Expression : StatementListopt
+
+DefaultClause :
+	default : StatementListopt
+```
+
+## 生成規則
+
+```
+SwitchStatement : switch ( Expression ) CaseBlock
+```
+
+1. exprRef は、Expressionを評価した結果とする
+2. R は、引数として GetValue(exprRef)を渡すことによってCaseBlockを評価した結果とする
+3. R.type が、 break 且つ、 R.target が、現在のラベルのセット内にある場合、return (normal, R.value, empty)
+4. Rを返す
+
+## 生成規則
+
+```
+CaseBlock : { CaseClausesopt }
+```
+
+1. V = empty とする
+2. A は、ソーステキスト順におけるCaseClauseアイテムのリストとする
+3. searching は、true とする
+4. searching が trueである間、繰り返す
+	a. C は、 A にある次のCaseClauseとする、そのようなCaseClauseがない場合、return (normal, V, empty)
+	b. clauseSelector は、C を評価した結果とする
+	c. input が、 === 演算子によって定義したように clauseSelector と同等である場合、
+		i. searching に false を設定
+		ii. C が、StatementListを持つ場合、
+			1. C のStatementListを評価し、 R は、 result とする
+			2. R が、中途完了(an abrupt completion)である場合、R を返す
+			3. V = R.value とする
+5. 繰り返す
+	a. C は、 A にある次のCaseClauseとする、もし、そのようなCaseClauseがない場合、return (normal, V, empty)
+	b. C が、StatementListを持つ場合、
+		i. C のStatementListを評価し、 R は、 result とする
+		ii. R.value が、emptyではない場合、 V = R.valueとする
+		iii. R が、中途完了(an abrupt completion)である場合、return (R.type, V, R.target)
+
+## 生成規則
+
+```
+CaseBlock : { CaseClausesopt DefaultClause CaseClausesopt }
+```
+
+1. V = empty とする
+2. A は、ソーステキスト順において1つめのCaseClausesとなるCaseClauseアイテムのリストとする
+3. B は、ソーステキスト順において2つめのCaseClausesとなるCaseClauseアイテムのリストとする
+4. found は、falseとする
+5. AにあるCaseClauseごとに順に文字 C として繰り返す
+	a. found が、 falseである場合、
+		i. clauseSelector は、 C を評価した結果とする
+		ii. input が、 === 演算子によって定義したようにclauseSelectorと同等である場合、 found に trueを設定
+	b. found が、 trueである場合
+		i. C が、StatementListを持つ場合、
+			1. C のStatementListを評価し、 R は、 result とする
+			2. R.value が、emptyではない場合、 V = R.value とする
+
+## 生成規則
+
+```
+CaseClause : case Expression : StatementListopt
+```
+
+1. exprRef は、Expressionを評価した結果とする
+2. GetValue(exprRef)を返す
+
+# 12.12 ラベル付き文
+## 構文
+
+```
+LabelledStatement :
+Identifier : Statement
+```
+
+Statementは、ラベルで前置される場合があります。 ラベルづけした文は、ラベル付けした break と継続する文を伴う接続詞の中でだけ使用されます。 ECMAScriptには、 goto 文はありません。
+
+# 12.13 throw 文
+## 構文
+
+```
+ThrowStatement :
+	throw [no LineTerminator here] Expression ;
+```
+
+## 生成規則
+
+```
+ThrowStatement : throw [no LineTerminator here] Expression ;
+```
+
+1. exprRef は、Expressionを評価した結果とする
+2. return (throw, GetValue(exprRef), empty)
+
+# 12.14 try 文
+## 構文
+
+```
+TryStatement :
+	try Block Catch
+	try Block Finally
+	try Block Catch Finally
+
+Catch :
+	catch ( Identifier ) Block
+
+Finally :
+	finally Block
+```
+
+## 生成規則
+
+```
+TryStatement : try Block Catch
+```
+
+1. B は、Blockを評価した結果とする
+2. B.type が、throwではない場合、Bを返す
+3. 引数 B.value を伴う Catch を評価した結果を返す
+
+## 生成規則
+
+```
+TryStatement : try Block Finally
+```
+
+1. B は、Blockを評価した結果とする
+2. F は、Finallyを評価した結果とする
+3. F.type が、normalである場合、 Bを返す
+4. F を返す
+
+## 生成規則
+
+```
+TryStatement : try Block Catch Finally
+```
+
+1. B は、Blockを評価した結果とする
+2. B.type が、 throwである場合、
+	a. C は、引数 B.valueを伴う Catch を評価した結果とする
+3.それ以外の場合、 B.type が、throwではない場合、
+	a. C は、 Bとする
+4. F は、Finallyを評価した結果とする
+5. F.type が、normalである場合、Cを返す
+6. F を返す
+
+## 生成規則
+
+```
+Catch : catch ( Identifier ) Block
+```
+
+1. C は、この生成規則に解釈される引数とする
+2. oldEnv は、実行中の実行コンテキストのLexicalEnvironmentとする
+3. catchEnv は、引数として oldEnv を渡すことによってNewDeclarativeEnvironmentを呼んだ結果とする
+4.引数として識別子のString値を渡すことによって catchEnv の具体的なメソッドCreateMutableBindingを呼ぶ
+5.引数として識別子、C、falseを渡すことによって catchEnv の具体的なメソッドSetMutableBindingを呼ぶ、注釈としては、最後の引数は、このような状況下では、さして重要ではない
+6.実行中の実行コンテキストのLexicalEnvironmentをcatchEnvに設定
+7. B は、Blockを評価した結果とする
+8.実行中の実行コンテキストのLexicalEnvironmentをoldEnvに設定
+9. B を返す
+
+## 12.14.1 strictモードの制限事項
+
+Catch を伴うTryStatementがstrictコード内で現れたり、 Catch 生成規則の識別子が、"eval" または、 "arguments"の何れかである場合には、SyntaxErrorです。
+
+# 12.15 debugger 文
+
+```
+DebuggerStatement :
+	debugger ;
+```
+
+## 生成規則
+
+```
+DebuggerStatement : debugger ;
+```
+
+1.実装定義のデバッグ機能が利用可能であり、使用可能な状態にある場合、
+	a.実装定義済みのデバッグアクションを実行
+	b. result は、実装定義の Completion 値とする
+2.それ以外の場合、
+	a. result は、(normal, empty, empty)とする
+3.resultを返す
