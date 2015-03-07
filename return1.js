@@ -15,3 +15,10 @@ function c() {
 
 console.log(c());
 
+// 改行するとreturnだけになる(セミコロンが補われる)
+function d() {
+  return
+  "d";
+}
+
+console.log(d());
