@@ -17,6 +17,11 @@ ReturnExpressionは以下のように評価。
 2. exprRef は、Expressionを評価した結果とする
 3. return (return, GetValue(exprRef), empty)
 
+### 補足
+
+* exprRef 定義
+* GetValue 説明のための関数 実際に値を取り出す
+
 # 12.10 with 文
 ## 構文
 
