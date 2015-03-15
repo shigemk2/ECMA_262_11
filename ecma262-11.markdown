@@ -44,6 +44,12 @@ withは次のように評価される
 8.実行中の実行コンテキストのLexicalEnvironmentに oldEnv を設定
 9. C を返す
 
+### 補足
+
+* レキシカル環境とは
+* ここでいうExpressionとはどこまでの式を指しているのか
+* provideThisフラグとは
+
 ## 12.10.1 strictモードの制限・制約
 
 strictモードのコードは、WithStatementに含んではならない。 このような文脈におけるWithStatementの出現は、SyntaxErrorとして扱われます。
