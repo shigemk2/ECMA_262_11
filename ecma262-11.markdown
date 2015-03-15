@@ -62,8 +62,8 @@ SwitchStatement :
 	switch ( Expression ) CaseBlock
 
 CaseBlock :
-	{ CaseClausesopt }
-	{ CaseClausesopt DefaultClause CaseClausesopt }
+	{ CaseClauses(opt) }
+	{ CaseClauses(opt) DefaultClause CaseClauses(opt) }
 
 CaseClauses :
 	CaseClause
@@ -76,6 +76,10 @@ DefaultClause :
 	default : StatementListopt
 ```
 
+### 補足
+
+* 構文が難しすぎです
+
 ## 生成規則
 
 ```
@@ -87,10 +91,16 @@ SwitchStatement : switch ( Expression ) CaseBlock
 3. R.type が、 break 且つ、 R.target が、現在のラベルのセット内にある場合、return (normal, R.value, empty)
 4. Rを返す
 
+### 補足
+
+1はexprRefの定義
+2はRの定義(RはたぶんReturn)
+3 Rはtypeとtargetとvalueというキーを持つオブジェクト?
+
 ## 生成規則
 
 ```
-CaseBlock : { CaseClausesopt }
+CaseBlock : { CaseClauses(opt) }
 ```
 
 1. V = empty とする
