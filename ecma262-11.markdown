@@ -9,9 +9,9 @@ ReturnStatement :
 
 no LineTerminator hereとは **ここに改行を入れてはならない**
 
-ECMAScriptのプログラムは、FunctionBody(関数本体)内に何もない return 文を含む場合、構文上の誤りがあると考えられます。 実行を中止する為の関数に起因する return 文は、callerに値を返します。 Expression が、省略される場合、戻り値は、undefined(未定義)です。 それ以外の場合、戻り値は、Expression(式)の値です。
+ECMAScriptのプログラムは、FunctionBody(関数本体)内に何もない return 文を含む場合、構文上の誤りがあると考えられます。 return文は関数に実行を中断させ、呼び出し元へ値を返す。 Expression が省略されると、戻り値は、undefined(未定義)となる。 それ以外の場合、戻り値は、Expression(式)の値となる。
 
-ReturnExpressionは以下のように評価。
+ReturnExpressionは以下のように評価する。
 
 1. Expressionが、存在しない場合、return (return, undefined, empty)
 2. exprRef は、Expressionを評価した結果とする
