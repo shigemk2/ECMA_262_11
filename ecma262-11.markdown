@@ -184,7 +184,10 @@ LabelledStatement :
 Identifier : Statement
 ```
 
-Statementは、ラベルで前置される場合があります。 ラベルづけした文は、ラベル付けした break と継続する文を伴う接続詞の中でだけ使用されます。 ECMAScriptには、 goto 文はありません。
+Statementは、ラベルで前置できます。 ラベルづけした文はラベル付けされたbreak文やcontinue文と同時に使われる場合に限って使われる。
+ECMAScriptには、 goto 文はありません。
+
+ECMAScriptプログラムは、それがラベルとして同じIdentifierを持つLabelledStatementによって囲まれたLabelledStatementを含むなら構文的に正しくないと考えられる。
 
 # 12.13 throw 文
 ## 構文
