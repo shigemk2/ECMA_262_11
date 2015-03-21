@@ -1,10 +1,11 @@
+// https://developer.mozilla.org/ja/docs/Web/JavaScript/Strict_mode
 "use strict";
 function div(x, y) {
   try{
     // 変数名にevalやargumentsは使ってはいけない
-    // var arguments = sub(x,y);
+    var arguments = sub(x,y);
     // var eval = sub(x,y);
-    var div = sub(x, y);
+    // var div = sub(x, y);
   } catch( e ) {
     console.log('無理');
   } finally {
