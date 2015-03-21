@@ -224,11 +224,15 @@ Finally :
 	finally Block
 ```
 
+try文は、実行時エラーまたはthrow文のような、例外的な状況が発生しうるコードの固まりを取り囲む。catch節は例外対応のコードを規定する。catch節が例外を捉えると、そのIdentifierはその例外に束縛される。
+
 ## 生成規則
 
 ```
 TryStatement : try Block Catch
 ```
+
+以下のように評価される。
 
 1. B は、Blockを評価した結果とする
 2. B.type が、throwではない場合、Bを返す
@@ -239,6 +243,8 @@ TryStatement : try Block Catch
 ```
 TryStatement : try Block Finally
 ```
+
+以下のように評価される。
 
 1. B は、Blockを評価した結果とする
 2. F は、Finallyを評価した結果とする
@@ -266,19 +272,23 @@ TryStatement : try Block Catch Finally
 Catch : catch ( Identifier ) Block
 ```
 
-1. C は、この生成規則に解釈される引数とする
+1. C は、この生成規則に渡される引数とする
 2. oldEnv は、実行中の実行コンテキストのLexicalEnvironmentとする
 3. catchEnv は、引数として oldEnv を渡すことによってNewDeclarativeEnvironmentを呼んだ結果とする
-4.引数として識別子のString値を渡すことによって catchEnv の具体的なメソッドCreateMutableBindingを呼ぶ
-5.引数として識別子、C、falseを渡すことによって catchEnv の具体的なメソッドSetMutableBindingを呼ぶ、注釈としては、最後の引数は、このような状況下では、さして重要ではない
-6.実行中の実行コンテキストのLexicalEnvironmentをcatchEnvに設定
+4. catchEnvのCreateMutableBinding具象メソッドをString値Identifierを引数として呼び出す
+5. catchEnvのSetMutableBindig具象メソッドをIdentifier、C、それとfalseを引数として呼び出す。最後の引数は、この場合、重要ではないことを留意する
+6. 実行中の実行コンテキストのLexicalEnvironmentをcatchEnvに設定
 7. B は、Blockを評価した結果とする
-8.実行中の実行コンテキストのLexicalEnvironmentをoldEnvに設定
+8. 実行中の実行コンテキストのLexicalEnvironmentをoldEnvに設定
 9. B を返す
 
 ## 12.14.1 strictモードの制限事項
 
 Catch を伴うTryStatementがstrictコード内で現れたり、 Catch 生成規則の識別子が、"eval" または、 "arguments"の何れかである場合には、SyntaxErrorです。
+
+### 補足
+
+* NewDeclarativeEnvironmentとは
 
 # 12.15 debugger 文
 
