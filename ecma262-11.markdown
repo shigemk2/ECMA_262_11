@@ -203,6 +203,8 @@ ThrowStatement :
 ThrowStatement : throw [no LineTerminator here] Expression ;
 ```
 
+改行禁止で、次のように評価される
+
 1. exprRef は、Expressionを評価した結果とする
 2. return (throw, GetValue(exprRef), empty)
 
