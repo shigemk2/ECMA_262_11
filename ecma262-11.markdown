@@ -86,9 +86,9 @@ DefaultClause :
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. exprRef は、Expressionを評価した結果とする
-2. R は、引数として GetValue(exprRef)を渡すことによってCaseBlockを評価した結果とする
-3. R.type が、 break 且つ、 R.target が、現在のラベルのセット内にある場合、return (normal, R.value, empty)
+1. exprRefを、Expressionを評価した結果とする
+2. Rは、CaseBlockを評価した結果とし、引数として GetValue(exprRef)を渡す。
+3. R.type が、 breakであり、 R.target が、現在のラベルのセットの中にある場合、return (normal, R.value, empty)
 4. Rを返す
 
 ### 補足
@@ -103,24 +103,26 @@ SwitchStatement : switch ( Expression ) CaseBlock
 CaseBlock : { CaseClauses(opt) }
 ```
 
+入力パラメータinputを与えられ、そして次のように評価される。
+
 1. V = empty とする
-2. A は、ソーステキスト順におけるCaseClauseアイテムのリストとする
-3. searching は、true とする
-4. searching が trueである間、繰り返す
-	a. C は、 A にある次のCaseClauseとする、そのようなCaseClauseがない場合、return (normal, V, empty)
-	b. clauseSelector は、C を評価した結果とする
-	c. input が、 === 演算子によって定義したように clauseSelector と同等である場合、
-		i. searching に false を設定
-		ii. C が、StatementListを持つ場合、
-			1. C のStatementListを評価し、 R は、 result とする
+2. A は、ソーステキストの順序におけるCaseClause項目のリストとする
+3. searching を true とする
+4. searching が trueである間、以下を繰り返す
+	a. C を A における次のCaseClauseとする、そのようなCaseClauseがない場合、(normal, V, empty)を返す
+	b. clauseSelector を C の評価結果とする
+	c. input が === 演算子によって定義されるように clauseSelector と等しければ、
+		i. searching に false を設定する
+		ii. C が、StatementListを持つなら、
+			1. C のStatementListを評価し、 R は、 その結果とする
 			2. R が、中途完了(an abrupt completion)である場合、R を返す
 			3. V = R.value とする
-5. 繰り返す
-	a. C は、 A にある次のCaseClauseとする、もし、そのようなCaseClauseがない場合、return (normal, V, empty)
+5. 以下を繰り返す
+	a. C は、 A にある次のCaseClauseとする、もし、そのようなCaseClauseがない場合、(normal, V, empty)を返す
 	b. C が、StatementListを持つ場合、
-		i. C のStatementListを評価し、 R は、 result とする
+		i. C のStatementListを評価し、 R は、 その結果とする
 		ii. R.value が、emptyではない場合、 V = R.valueとする
-		iii. R が、中途完了(an abrupt completion)である場合、return (R.type, V, R.target)
+		iii. R が、中途完了である場合、(R.type, V, R.target)を返す
 
 ## 生成規則
 
@@ -128,18 +130,42 @@ CaseBlock : { CaseClauses(opt) }
 CaseBlock : { CaseClausesopt DefaultClause CaseClausesopt }
 ```
 
+入力パラメータinputを与えられ、次のように評価される。
+
 1. V = empty とする
-2. A は、ソーステキスト順において1つめのCaseClausesとなるCaseClauseアイテムのリストとする
-3. B は、ソーステキスト順において2つめのCaseClausesとなるCaseClauseアイテムのリストとする
+2. A を1つめのCaseClausesの、ソーステキスト順序におけるCaseClause項目の一覧とする
+3. B を2つめのCaseClausesの、ソーステキスト順序におけるCaseClause項目の一覧とする
 4. found は、falseとする
-5. AにあるCaseClauseごとに順に文字 C として繰り返す
+5. CをAにあるCaseClauseとすることを順番に繰り返す
 	a. found が、 falseである場合、
-		i. clauseSelector は、 C を評価した結果とする
-		ii. input が、 === 演算子によって定義したようにclauseSelectorと同等である場合、 found に trueを設定
+		i. clauseSelector は、 C の評価した結果とする
+		ii. input が、 === 演算子によって定義されるようにclauseSelectorと同等である場合
 	b. found が、 trueである場合
 		i. C が、StatementListを持つ場合、
 			1. C のStatementListを評価し、 R は、 result とする
 			2. R.value が、emptyではない場合、 V = R.value とする
+			3. Rが中途完了であるなら、(R.type, V, R.target)を返す
+6. foundInBをfalseとする
+7. foundがfalseならば
+	a. foundInBがfalseであり、Bのすべての要素が未処理であるあいだ、以下を繰り返す
+		i. CをBにおける次のCaseClauseとする
+		ii. clauseSelectorをCの評価結果とする
+		iii. inputが===演算子によって定義されるようにclauseSelectorと等しければ、
+			1. foundInBをtrueに設定する
+			2. CがStatementListを持つなら、
+				a. CのStatementListを評価して、Rをその結果とする
+				b. R.valueがemptyでなければ、V = R.valueとする
+				c. Rが中途完了であるなら、(R.type, V, R.target)を返す
+8. foundInBがfalseであり、DefaaultClauseがStatementListを持つなら、
+	a. DefaultClauseのStatementListを評価して、Rをその結果とする
+	b. R.valueがemptyでなければ、V = R.valueとする
+	c. Rが中途完了であるなら、(R.type, V, R.target)とする
+9. 以下を繰り返す(ステップ7.a.iが実行されるなら、このループはBの先頭を開始しないことに留意すべきである)
+	a. CをBにおける次のCaseClauseとする。そのようなCaseClauseが存在しなければ、(normal, V, empty)を返す
+	b. CがStatementListを持つなら、
+		i. CのStatementListを評価して、Rをその結果とする
+		ii. R.valueがemptyでなければ、V = R.valueとする
+		iii. Rが中途完了であるなら、(R.type, V, R.target)を返す
 
 ## 生成規則
 
