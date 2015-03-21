@@ -284,7 +284,11 @@ Catch : catch ( Identifier ) Block
 
 ## 12.14.1 strictモードの制限事項
 
-Catch を伴うTryStatementがstrictコード内で現れたり、 Catch 生成規則の識別子が、"eval" または、 "arguments"の何れかである場合には、SyntaxErrorです。
+Catch を伴うTryStatementがstrictコード内で現れたり、 Catch 生成規則の識別子が、"eval" または、 "arguments"のいずれかである場合には、SyntaxErrorです。
+
+```
+Unexpected eval or arguments in strict mode
+```
 
 ### 補足
 
