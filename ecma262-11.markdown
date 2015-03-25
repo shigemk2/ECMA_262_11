@@ -15,7 +15,7 @@ ReturnExpressionは以下のように評価する。
 
 1. Expressionが、存在しない場合、return (return, undefined, empty)
 2. exprRef は、Expressionを評価した結果とする
-3. return (return, GetValue(exprRef), empty)
+3. (return, GetValue(exprRef), empty)を返す
 
 ### 補足
 
@@ -89,14 +89,15 @@ SwitchStatement : switch ( Expression ) CaseBlock
 
 1. exprRefを、Expressionを評価した結果とする
 2. Rは、CaseBlockを評価した結果とし、それにGetValue(exprRef)を引数として渡す。
-3. R.type が、 breakであり、 R.target が、現在のラベルのセットの中にある場合、return (normal, R.value, empty)
+3. R.type が、 breakであり、 R.target が、現在のラベルのセットの中にある場合、(normal, R.value, empty)を返す
 4. Rを返す
 
 ### 補足
 
 1はexprRefの定義
 2はRの定義(RはたぶんReturn)
-3 Rはtypeとtargetとvalueというキーを持つオブジェクト?
+3 Rはtypeとtargetとvalueというキーを持つタプルのことなのか R = (type, value, target)
+
 
 ## 生成規則
 
@@ -283,6 +284,14 @@ Catch : catch ( Identifier ) Block
 8. 実行中の実行コンテキストのLexicalEnvironmentをoldEnvに設定
 9. B を返す
 
+## 生成規則
+
+```
+Finally: finally Block
+```
+
+1. Blockを評価した結果を返す
+
 ## 12.14.1 strictモードの制限事項
 
 Catch を伴うTryStatementがstrictコード内で現れたり、 Catch 生成規則の識別子が、"eval" または、 "arguments"のいずれかである場合には、SyntaxErrorです。
@@ -308,12 +317,12 @@ DebuggerStatement :
 DebuggerStatement : debugger ;
 ```
 
-1.実装定義のデバッグ機能が利用可能であり有効化されているなら
-	a.実装定義のデバッグ動作を実行
+1. 実装定義のデバッグ機能が利用可能であり有効化されているなら
+	a. 実装定義のデバッグ動作を実行
 	b. result は、実装定義の Completion 値とする
-2.それ以外の場合
+2. それ以外の場合
 	a. result は、(normal, empty, empty)とする
-3.resultを返す
+3. resultを返す
 
 ### 補足
 
