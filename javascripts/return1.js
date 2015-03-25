@@ -1,3 +1,7 @@
+// FunctionBody内にないreturn文を含むなら構文的に正しくない
+return 1;
+console.log(1);
+
 function a() {
   return;
 }
