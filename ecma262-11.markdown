@@ -79,6 +79,7 @@ DefaultClause :
 ### 補足
 
 * 構文が難しすぎです
+* CaseClausesで(左)再帰を実現している
 
 ## 生成規則
 
@@ -87,7 +88,7 @@ SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
 1. exprRefを、Expressionを評価した結果とする
-2. Rは、CaseBlockを評価した結果とし、引数として GetValue(exprRef)を渡す。
+2. Rは、CaseBlockを評価した結果とし、それにGetValue(exprRef)を引数として渡す。
 3. R.type が、 breakであり、 R.target が、現在のラベルのセットの中にある場合、return (normal, R.value, empty)
 4. Rを返す
 
@@ -206,7 +207,7 @@ ThrowStatement : throw [no LineTerminator here] Expression ;
 改行禁止で、次のように評価される
 
 1. exprRef は、Expressionを評価した結果とする
-2. return (throw, GetValue(exprRef), empty)
+2. (throw, GetValue(exprRef), empty)を返す
 
 # 12.14 try 文
 ## 構文
