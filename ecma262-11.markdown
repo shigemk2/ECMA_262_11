@@ -318,10 +318,10 @@ DebuggerStatement : debugger ;
 ```
 
 1. 実装定義のデバッグ機能が利用可能であり有効化されているなら
-    a. 実装定義のデバッグ動作を実行
-    b. result は、実装定義の Completion 値とする
+    * a 実装定義のデバッグ動作を実行
+    * b result は、実装定義の Completion 値とする
 2. それ以外の場合
-    a. result は、(normal, empty, empty)とする
+    * a result は、(normal, empty, empty)とする
 3. resultを返す
 
 ### 補足
