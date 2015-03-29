@@ -111,20 +111,20 @@ CaseBlock : { CaseClauses(opt) }
 2. A は、ソーステキストの順序におけるCaseClause項目のリストとする
 3. searching を true とする
 4. searching が trueである間、以下を繰り返す
-	a. C を A における次のCaseClauseとする、そのようなCaseClauseがない場合、(normal, V, empty)を返す
-	b. clauseSelector を C の評価結果とする
-	c. input が === 演算子によって定義されるように clauseSelector と等しければ、
-		i. searching に false を設定する
-		ii. C が、StatementListを持つなら、
-			1. C のStatementListを評価し、 R は、 その結果とする
-			2. R が、中途完了(an abrupt completion)である場合、R を返す
-			3. V = R.value とする
+    a. C を A における次のCaseClauseとする、そのようなCaseClauseがない場合、(normal, V, empty)を返す
+    b. clauseSelector を C の評価結果とする
+    c. input が === 演算子によって定義されるように clauseSelector と等しければ、
+        i. searching に false を設定する
+        ii. C が、StatementListを持つなら、
+            1. C のStatementListを評価し、 R は、 その結果とする
+            2. R が、中途完了(an abrupt completion)である場合、R を返す
+            3. V = R.value とする
 5. 以下を繰り返す
-	a. C は、 A にある次のCaseClauseとする、もし、そのようなCaseClauseがない場合、(normal, V, empty)を返す
-	b. C が、StatementListを持つ場合、
-		i. C のStatementListを評価し、 R は、 その結果とする
-		ii. R.value が、emptyではない場合、 V = R.valueとする
-		iii. R が、中途完了である場合、(R.type, V, R.target)を返す
+    a. C は、 A にある次のCaseClauseとする、もし、そのようなCaseClauseがない場合、(normal, V, empty)を返す
+    b. C が、StatementListを持つ場合、
+        i. C のStatementListを評価し、 R は、 その結果とする
+        ii. R.value が、emptyではない場合、 V = R.valueとする
+        iii. R が、中途完了である場合、(R.type, V, R.target)を返す
 
 ## 生成規則
 
@@ -139,35 +139,35 @@ CaseBlock : { CaseClausesopt DefaultClause CaseClausesopt }
 3. B を2つめのCaseClausesの、ソーステキスト順序におけるCaseClause項目の一覧とする
 4. found は、falseとする
 5. CをAにあるCaseClauseとすることを順番に繰り返す
-	a. found が、 falseである場合、
-		i. clauseSelector は、 C の評価した結果とする
-		ii. input が、 === 演算子によって定義されるようにclauseSelectorと同等である場合
-	b. found が、 trueである場合
-		i. C が、StatementListを持つ場合、
-			1. C のStatementListを評価し、 R は、 result とする
-			2. R.value が、emptyではない場合、 V = R.value とする
-			3. Rが中途完了であるなら、(R.type, V, R.target)を返す
+    a. found が、 falseである場合、
+        i. clauseSelector は、 C の評価した結果とする
+        ii. input が、 === 演算子によって定義されるようにclauseSelectorと同等である場合
+    b. found が、 trueである場合
+        i. C が、StatementListを持つ場合、
+            1. C のStatementListを評価し、 R は、 result とする
+            2. R.value が、emptyではない場合、 V = R.value とする
+            3. Rが中途完了であるなら、(R.type, V, R.target)を返す
 6. foundInBをfalseとする
 7. foundがfalseならば
-	a. foundInBがfalseであり、Bのすべての要素が未処理であるあいだ、以下を繰り返す
-		i. CをBにおける次のCaseClauseとする
-		ii. clauseSelectorをCの評価結果とする
-		iii. inputが===演算子によって定義されるようにclauseSelectorと等しければ、
-			1. foundInBをtrueに設定する
-			2. CがStatementListを持つなら、
-				a. CのStatementListを評価して、Rをその結果とする
-				b. R.valueがemptyでなければ、V = R.valueとする
-				c. Rが中途完了であるなら、(R.type, V, R.target)を返す
+    a. foundInBがfalseであり、Bのすべての要素が未処理であるあいだ、以下を繰り返す
+        i. CをBにおける次のCaseClauseとする
+        ii. clauseSelectorをCの評価結果とする
+        iii. inputが===演算子によって定義されるようにclauseSelectorと等しければ、
+            1. foundInBをtrueに設定する
+            2. CがStatementListを持つなら、
+                a. CのStatementListを評価して、Rをその結果とする
+                b. R.valueがemptyでなければ、V = R.valueとする
+                c. Rが中途完了であるなら、(R.type, V, R.target)を返す
 8. foundInBがfalseであり、DefaaultClauseがStatementListを持つなら、
-	a. DefaultClauseのStatementListを評価して、Rをその結果とする
-	b. R.valueがemptyでなければ、V = R.valueとする
-	c. Rが中途完了であるなら、(R.type, V, R.target)とする
+    a. DefaultClauseのStatementListを評価して、Rをその結果とする
+    b. R.valueがemptyでなければ、V = R.valueとする
+    c. Rが中途完了であるなら、(R.type, V, R.target)とする
 9. 以下を繰り返す(ステップ7.a.iが実行されるなら、このループはBの先頭を開始しないことに留意すべきである)
-	a. CをBにおける次のCaseClauseとする。そのようなCaseClauseが存在しなければ、(normal, V, empty)を返す
-	b. CがStatementListを持つなら、
-		i. CのStatementListを評価して、Rをその結果とする
-		ii. R.valueがemptyでなければ、V = R.valueとする
-		iii. Rが中途完了であるなら、(R.type, V, R.target)を返す
+    a. CをBにおける次のCaseClauseとする。そのようなCaseClauseが存在しなければ、(normal, V, empty)を返す
+    b. CがStatementListを持つなら、
+        i. CのStatementListを評価して、Rをその結果とする
+        ii. R.valueがemptyでなければ、V = R.valueとする
+        iii. Rが中途完了であるなら、(R.type, V, R.target)を返す
 
 ## 生成規則
 
@@ -196,7 +196,7 @@ ECMAScriptプログラムは、それがラベルとして同じIdentifierを持
 
 ```
 ThrowStatement :
-	throw [no LineTerminator here] Expression ;
+    throw [no LineTerminator here] Expression ;
 ```
 
 ## 生成規則
@@ -215,15 +215,15 @@ ThrowStatement : throw [no LineTerminator here] Expression ;
 
 ```
 TryStatement :
-	try Block Catch
-	try Block Finally
-	try Block Catch Finally
+    try Block Catch
+    try Block Finally
+    try Block Catch Finally
 
 Catch :
-	catch ( Identifier ) Block
+    catch ( Identifier ) Block
 
 Finally :
-	finally Block
+    finally Block
 ```
 
 try文は、実行時エラーまたはthrow文のような、例外的な状況が発生しうるコードの固まりを取り囲む。catch節は例外対応のコードを規定する。catch節が例外を捉えると、そのIdentifierはその例外に束縛される。
@@ -261,9 +261,9 @@ TryStatement : try Block Catch Finally
 
 1. B は、Blockを評価した結果とする
 2. B.type が、 throwである場合、
-	a. C は、引数 B.valueを伴う Catch を評価した結果とする
+    a. C は、引数 B.valueを伴う Catch を評価した結果とする
 3.それ以外の場合、 B.type が、throwではない場合、
-	a. C は、 Bとする
+    a. C は、 Bとする
 4. F は、Finallyを評価した結果とする
 5. F.type が、normalである場合、Cを返す
 6. F を返す
@@ -308,7 +308,7 @@ Unexpected eval or arguments in strict mode
 
 ```
 DebuggerStatement :
-	debugger ;
+    debugger ;
 ```
 
 ## 生成規則
@@ -318,10 +318,10 @@ DebuggerStatement : debugger ;
 ```
 
 1. 実装定義のデバッグ機能が利用可能であり有効化されているなら
-	a. 実装定義のデバッグ動作を実行
-	b. result は、実装定義の Completion 値とする
+    a. 実装定義のデバッグ動作を実行
+    b. result は、実装定義の Completion 値とする
 2. それ以外の場合
-	a. result は、(normal, empty, empty)とする
+    a. result は、(normal, empty, empty)とする
 3. resultを返す
 
 ### 補足
