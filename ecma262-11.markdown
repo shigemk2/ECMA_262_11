@@ -261,9 +261,9 @@ TryStatement : try Block Catch Finally
 
 1. B は、Blockを評価した結果とする
 2. B.type が、 throwである場合、
-    a. C は、引数 B.valueを伴う Catch を評価した結果とする
+    * C は、引数 B.valueを伴う Catch を評価した結果とする
 3.それ以外の場合、 B.type が、throwではない場合、
-    a. C は、 Bとする
+    * C は、 Bとする
 4. F は、Finallyを評価した結果とする
 5. F.type が、normalである場合、Cを返す
 6. F を返す
