@@ -41,7 +41,7 @@ withは次のように評価される
 5. newEnv の provideThis フラグに true を設定
 6. 実行中の実行コンテキストのLexicalEnvironmentに newEnv を設定
 7. C は、Statementを評価した結果とするが、評価中に例外が投げられる(スローされる)場合、  V が例外である場合、 C は、 (throw, V, empty)とする(、もし、投げられる(スローされる)例外がない場合のように現在の結果を実行する)
-8.実行中の実行コンテキストのLexicalEnvironmentに oldEnv を設定
+8. 実行中の実行コンテキストのLexicalEnvironmentに oldEnv を設定
 9. C を返す
 
 ### 補足
