@@ -23,4 +23,3 @@ default:
   console.log("other");
   break;
 }
-
