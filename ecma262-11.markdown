@@ -190,7 +190,9 @@ Statementの前にラベルをつけることができる。ラベルづけし�
 
 ECMAScriptプログラムは、それがラベルとして同じIdentifierを持つLabelledStatementによって囲まれたLabelledStatementを含むなら構文的に正しくないと考えられる。これはラベルづけされたぶんの中で、直接的または間接的に入れ子にされるFunctionDeclarationの本体の中に現れるラベルには現れない。
 
+Identifier : StatementはStatementのラベルセットへIdentifierを追加し、Statementを評価することによって評価される。
 
+LabelledStatementの評価に先立ち、そこに含まれるStatementは、それがIterationStatementまたはSwitchStatement出ない限り、空のラベルセットを処理するとみなされる。
 
 # 12.13 throw 文
 ## 構文
